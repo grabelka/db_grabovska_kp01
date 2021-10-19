@@ -3,22 +3,22 @@ class view:
     def __init__(self):  
         print('----------Welcome----------')
 
-    def readCommand():
-        com = input("Enter command (create, delete, update, random, readCuratorGroup, deleteStudentFromGroup, readStudentCurator): ")
+    def readCommand(self):
+        com = input("Enter command (create, delete, update, random, readCuratorGroup, readCuratorSubject, readStudentCurator): ")
         return com
 
-    def readTable():        
+    def readTable(self):        
         tab = input("Enter table name: ")
         if(tab == 'curators' or tab == 'groups' or tab == 'students' or tab == 'subjects'):
             return tab
         return ''
     
-    def getVal():
-        val = input("Enter value: ")
+    def getStr(self):
+        val = input("Enter a value: ")
         return val
 
-    def getId():
-        val = input("Enter id: ")
+    def getNum(self):
+        val = input("Enter a number: ")
         try:
             int(val)
         except ValueError:

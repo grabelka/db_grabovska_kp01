@@ -1,3 +1,4 @@
+import timeit
 import psycopg2
 from psycopg2 import Error
 
@@ -8,6 +9,107 @@ class curators:
         self.name = ""
         self.surname = ""
         self.phone = ""
+
+    def readGroup(self, c, code):
+        start = timeit.timeit()
+        if (c < 1):
+            print('Error with input!')
+            return 
+        try:
+            connection = psycopg2.connect(user="postgres",
+                                            password="1",
+                                            host="127.0.0.1",
+                                            port="5432",
+                                            database="university")
+            cursor = connection.cursor()
+            selecr_query = """SELECT curators.name, curators.surname, groups.code from curators, groups WHERE curators.id = %s AND groups.curator_id = %s AND groups.code LIKE %s"""
+            item_tuple = (c, c, code + "%")
+            cursor.execute(selecr_query, item_tuple)
+            connection.commit()
+            print("Result", cursor.fetchall())
+        except (Exception, Error) as error:
+            print("Error with PostgreSQL", error)
+        finally:
+            if connection:
+                cursor.close()
+                connection.close()
+                end = timeit.timeit()
+                print("Time for operation " + str(end - start))
+
+    def readSubject(self, c, surname):
+        start = timeit.timeit()
+        if (c < 1):
+            print('Error with input!')
+            return 
+        try:
+            connection = psycopg2.connect(user="postgres",
+                                            password="1",
+                                            host="127.0.0.1",
+                                            port="5432",
+                                            database="university")
+            cursor = connection.cursor()
+            selecr_query = """SELECT curators.name, curators.surname, subjects.name from curators, subjects WHERE curators.id = %s AND subjects.curator_id = %s AND curators.surname LIKE %s"""
+            item_tuple = (c, c, surname + "%")
+            cursor.execute(selecr_query, item_tuple)
+            connection.commit()
+            print("Result", cursor.fetchall())
+        except (Exception, Error) as error:
+            print("Error with PostgreSQL", error)
+        finally:
+            if connection:
+                cursor.close()
+                connection.close()
+                end = timeit.timeit()
+                print("Time for operation " + str(end - start))
+
+    def readStudent(self, c, s):
+        start = timeit.timeit()
+        if (c < 1):
+            print('Error with input!')
+            return 
+        try:
+            connection = psycopg2.connect(user="postgres",
+                                            password="1",
+                                            host="127.0.0.1",
+                                            port="5432",
+                                            database="university")
+            cursor = connection.cursor()
+            selecr_query = """SELECT curators.name, curators.surname, groups.code, students.name, students.surname from curators, groups, students WHERE curators.id = %s AND groups.curator_id = %s AND students.surname LIKE %s"""
+            item_tuple = (c, c, s + "%")
+            cursor.execute(selecr_query, item_tuple)
+            connection.commit()
+            print("Result", cursor.fetchall())
+        except (Exception, Error) as error:
+            print("Error with PostgreSQL", error)
+        finally:
+            if connection:
+                cursor.close()
+                connection.close()
+                end = timeit.timeit()
+                print("Time for operation " + str(end - start))
+
+    def random(self, n):
+        res = n
+        for i in range(n):
+            try:
+                connection = psycopg2.connect(user="postgres",
+                                            password="1",
+                                            host="127.0.0.1",
+                                            port="5432",
+                                            database="university")
+                cursor = connection.cursor()
+                try:
+                    cursor.execute("INSERT INTO curators (id, name, surname, phone) VALUES ((SELECT trunc(random() * %s + 1)::int), (SELECT chr(trunc(random() * 25 + 65)::int) || chr(trunc(random() * 25 + 97)::int) || chr(trunc(random() * 25 + 97)::int)), (SELECT chr(trunc(random() * 25 + 65)::int) || chr(trunc(random() * 25 + 97)::int) || chr(trunc(random() * 25 + 97)::int)), (SELECT trunc(random() * 999999 + 1)::int))", [n])
+                except:
+                    res-=1
+                connection.commit()
+            except (Exception, Error) as error:
+                print("Error with PostgreSQL", error)
+            finally:
+                if connection:
+                    cursor.close()
+                    connection.close()
+        print(str(res) + " Entities added.")
 
     def create(self, id, name, surname, phone):
         if (id < 1):
@@ -69,7 +171,7 @@ class curators:
                                             port="5432",
                                             database="university")
             cursor = connection.cursor()
-            cursor.execute("Delete from curators WHERE id = %s", [id])
+            cursor.execute("Delete from subjects WHERE curator_id = %s; Delete from groups WHERE curator_id = %s; Delete from curators WHERE id = %s", [id, id, id])
             connection.commit()
             count = cursor.rowcount
             print(count, "Entity deleted")
@@ -92,7 +194,7 @@ class curators:
                                             database="university")
             cursor = connection.cursor()
             selecr_query = """SELECT * from curators WHERE id = %s"""
-            item_tuple = (id,)
+            item_tuple = (id)
             cursor.execute(selecr_query, item_tuple)
             connection.commit()
             print("Result", cursor.fetchall())
@@ -110,6 +212,27 @@ class groups:
         self.code = ""  
         self.curator_id = 0  
 
+    def delete(self, id):
+        if (id < 1):
+            print('Error with input!')
+            return 
+        try:
+            connection = psycopg2.connect(user="postgres",
+                                            password="1",
+                                            host="127.0.0.1",
+                                            port="5432",
+                                            database="university")
+            cursor = connection.cursor()
+            cursor.execute("Delete from students WHERE group_id = %s; Delete from groups WHERE id = %s", [id, id])
+            connection.commit()
+            count = cursor.rowcount
+            print(count, "Entity deleted")
+        except (Exception, Error) as error:
+            print("Error with PostgreSQL", error)
+        finally:
+            if connection:
+                cursor.close()
+                connection.close()
         
 class students:
 
