@@ -22,6 +22,6 @@ class view:
         try:
             int(val)
         except ValueError:
-            print(val + " is invalid")
+            print(val + " isn't a number")
             return 0
         return int(val)
