@@ -4,7 +4,7 @@ class view:
         print('----------Welcome----------')
 
     def readCommand(self):
-        com = input("Enter command (create, delete, update, random, readCuratorGroup, readCuratorSubject, readStudentCurator): ")
+        com = input("Enter command (create, delete, update, random, readCuratorGroup, readCuratorSubject, readStudentCurator or exit): ")
         return com
 
     def readTable(self):        
